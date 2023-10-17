@@ -15,9 +15,26 @@ char *emmy_read_input(void)
 	/* The size of the buffer to store the input. Initialized to 0. */
 	size_t lenbuf = 0;
 
-	/* Read the input using getline function. */
-	getline(&input, &lenbuf, stdin);
+	/* The number of characters read by getline. */
+	ssize_t num_chars;
 
+	/* Read the input using getline function. */
+	num_chars = getline(&input, &lenbuf, stdin);
+	/* If getline returns -1, it means EOF or an error occurred. */
+	if (num_chars == -1)
+	{
+		/* If EOF, exit the program cleanly. */
+		if (feof(stdin))
+		{
+			exit(EXIT_SUCCESS);
+		}
+		/* If it's an error, print a message and exit with a failure status. */
+		else
+		{
+			perror("emmyerror");
+			exit(EXIT_FAILURE);
+		}
+	}
 	/* Return the input read. */
 	return (input);
 }
