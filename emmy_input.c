@@ -13,7 +13,7 @@ int main(void)
 
 	while (true)
 	{
-		emmyf("emmy$ ");
+		emmyf("$ ");
 
 		input = emmy_read_input();
 		token = emmy_split_input(input);
