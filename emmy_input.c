@@ -81,4 +81,41 @@ char **emmy_split_input(char *input)
 	return (token);
 }
 
+/**
+ * emmy_parse_input - Splits the input into tokens.
+ * @input: A pointer to a null-terminated string that represents
+ *          the input to be split.
+ *
+ * Return:
+ *   A pointer to an array of tokens.
+ */
 
+char **emmy_parse_input(char *input)
+{
+	int capacity = 64;
+	char **args = malloc(capacity * sizeof(char *));
+	char *delimiter = " \t\r\n";
+	char *arg;
+	int length = 0;
+
+	arg = strtok(input, delimiter);
+
+	while (arg != NULL)
+	{
+		args[length] = arg;
+
+		length++;
+
+		if (length >= capacity)
+		{
+			capacity *= 2;
+			args = realloc(args, capacity * sizeof(char *));
+		}
+
+		arg = strtok(NULL, delimiter);
+	}
+
+	args[length] = NULL;
+
+	return (args);
+}

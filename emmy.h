@@ -18,7 +18,7 @@ void itoa(unsigned int n, char *str);
 char **emmy_split_input(char *input);
 char *emmy_read_input();
 void emmy_exec(char **args);
-
+char **emmy_parse_input(char *input);
 
 
 #endif
