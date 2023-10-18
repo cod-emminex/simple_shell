@@ -41,3 +41,53 @@ void emmy_exec(char **args)
 		perror("emmyerror");
 	}
 }
+
+/**
+ * emmy_loop - execute using execve
+ * Replaces the current process image with a new process image.
+ * @env: prompt
+ */
+
+void emmy_loop(char **env)
+{
+	char *input, **args, *command_path;
+	int status;
+
+	do {
+		emmyf("> ");
+		input = emmy_read_input();
+		input[strcspn(input, "\n")] = 0;
+
+		status = 0;
+		args = emmy_parse_input(input);
+		command_path = emmy_check_command(args[0], env);
+
+		if (command_path != NULL)
+		{
+			pid_t pid;
+			int status;
+
+			pid = fork();
+			if (pid == 0)
+			{
+				if (execve(command_path, args, env) == -1)
+				{
+					perror("emmy");
+					exit(EXIT_FAILURE);
+				}
+			}
+			else if (pid < 0)
+			{
+				perror("emmy");
+			}
+			else
+			{
+				do {
+					waitpid(pid, &status, WUNTRACED);
+				} while (!WIFEXITED(status) && !WIFSIGNALED(status));
+			}
+		}
+		free(input);
+		free(args);
+	} while (status);
+}

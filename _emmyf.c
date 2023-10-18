@@ -14,5 +14,7 @@ void emmyf(const char *format, ...)
 
 	vfprintf(stdout, format, args);
 
+	vprintf(format, args);
+
 	va_end(args);
 }

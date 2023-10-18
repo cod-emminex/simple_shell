@@ -19,6 +19,7 @@ char **emmy_split_input(char *input);
 char *emmy_read_input();
 void emmy_exec(char **args);
 char **emmy_parse_input(char *input);
-
+void emmy_loop(char **env);
+char *emmy_check_command(char *command, char **env);
 
 #endif
