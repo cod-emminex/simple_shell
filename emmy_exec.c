@@ -54,7 +54,6 @@ void emmy_loop(char **env)
 	int status;
 
 	do {
-		emmyf("> ");
 		input = emmy_read_input();
 		input[strcspn(input, "\n")] = 0;
 
