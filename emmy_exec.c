@@ -43,50 +43,24 @@ void emmy_exec(char **args)
 }
 
 /**
- * emmy_loop - execute using execve
- * Replaces the current process image with a new process image.
- * @env: prompt
+ * emmy_env - prints the current environment
+ * @args: arguments passed to the function
+ * @envp: environment
+ * Return: nothing
  */
 
-void emmy_loop(char **env)
+void emmy_env(char **args, char **envp)
 {
-	char *input, **args, *command_path;
-	int status;
+	int i = 0;
 
-	do {
-		input = emmy_read_input();
-		input[strcspn(input, "\n")] = 0;
+	while (envp[i] != NULL)
+	{
+		if (args != NULL && strstr(envp[i], *args) != NULL)
 
-		status = 0;
-		args = emmy_parse_input(input);
-		command_path = emmy_check_command(args[0], env);
-
-		if (command_path != NULL)
 		{
-			pid_t pid;
-			int status;
-
-			pid = fork();
-			if (pid == 0)
-			{
-				if (execve(command_path, args, env) == -1)
-				{
-					perror("emmy");
-					exit(EXIT_FAILURE);
-				}
-			}
-			else if (pid < 0)
-			{
-				perror("emmy");
-			}
-			else
-			{
-				do {
-					waitpid(pid, &status, WUNTRACED);
-				} while (!WIFEXITED(status) && !WIFSIGNALED(status));
-			}
+		emmyf("%s\n", envp[i]);
+		i++;
 		}
-		free(input);
-		free(args);
-	} while (status);
+	}
 }
+
