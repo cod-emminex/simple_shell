@@ -117,7 +117,7 @@ char **emmy_parse_input(char *input)
 {
 	int capacity = 64;
 	char **args = malloc(capacity * sizeof(char *));
-	char *delimiter = " \t\r\n";
+	char *delimiter = " ";
 	char *arg;
 	int length = 0;
 
