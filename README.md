@@ -1,3 +1,1 @@
-This is Shell project
-
-stay tuned
+Working on Shell
