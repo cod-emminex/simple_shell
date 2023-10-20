@@ -24,6 +24,7 @@ char *_reverse(char *s);
 void execute_command(char *line);
 char **parse_line(char *line);
 
+void display_prompt(void);
 
 
 #endif

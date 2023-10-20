@@ -15,8 +15,9 @@ int main(void)
     ssize_t read;
     char **args;
 
-    while (1) {
-        my_printf("$ ");
+    while (1)
+	{
+		display_prompt();
         read = getline(&line, &len, stdin);
         if (read == -1) {
             exit(EXIT_SUCCESS);
@@ -39,3 +40,8 @@ int main(void)
 	free(line);
     return (0);
 }
+
+
+
+
+
