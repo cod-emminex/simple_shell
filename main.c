@@ -13,13 +13,10 @@
 
 int main(int __attribute__((unused))ac, char **argv, char **env)
 {
-	char *path;
-	char **path_dirs;
 	char *buffer = NULL;
 	size_t bufsize = 0;
 	ssize_t characters = 0;
-	char **args;
-	char *filename;
+	char **args, *filename, *path, **path_dirs;
 
 	while (1)
 	{
@@ -39,7 +36,6 @@ int main(int __attribute__((unused))ac, char **argv, char **env)
 				write(STDERR_FILENO, "\n", 1);
 			exit(0);
 		}
-
 		buffer = built_in(buffer, env);
 		if (buffer == NULL)
 		{
@@ -48,14 +44,13 @@ int main(int __attribute__((unused))ac, char **argv, char **env)
 			free(buffer);
 		}
 		args = ret_array(buffer);
-
 		filename = is_exec(path_dirs, buffer);
 		fork_execute(filename, args, argv[0]);
-
 		free(path_dirs);
 		free(path);
 		free(args);
 		free(buffer);
+
 	}
 	return (0);
 }
