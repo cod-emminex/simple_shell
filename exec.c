@@ -1,94 +1,26 @@
-#include "emmy.h"
+#include "header.h"
 
 /**
- * execute_command - Executes the command
- * @line: The command to be executed
- * @env: The environment variables
+ * is_exec - checks if file exists and is executable
+ * @path: takes in matrix of strings
+ * @name: string to check access against
  *
- * Return: Nothing
- */
-void execute_command(char *line)
+ * Return: executable file, original string, or error
+*/
+char *is_exec(char **path, char *name)
 {
-    char **args;
-    pid_t pid;
-    int status;
+	char *str;
 
-    /* Parse the command line into arguments */
-    args = parse_line(line);
-    if (args == NULL)
-    {
-        my_printf("Error: Invalid command\n");
-        return;
-    }
-
-    /* Fork a child process */
-    pid = fork();
-    if (pid == -1)
-    {
-        my_printf("Error: Failed to fork\n");
-        return;
-    }
-
-    /* If this is the child process, execute the command */
-    if (pid == 0)
-    {
-        if (execve(args[0], args, NULL) == -1)
-        {
-            my_printf("Error: Failed to execute command\n");
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    /* If this is the parent process, wait for the child process to finish */
-    else
-    {
-        do
-        {
-            waitpid(pid, &status, WUNTRACED);
-        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-    }
-
-    /* Free the memory allocated for the arguments */
-    free(args);
-}
-
-/**
- * parse_line - Parses the command line into arguments
- * @line: The command line to be parsed
- *
- * Return: A pointer to the arguments
- */
-char **parse_line(char *line)
-{
-    int bufsize = TOK_BUFSIZE, position = 0;
-    char **tokens = malloc(bufsize * sizeof(char*));
-    char *token;
-
-    if (!tokens)
-    {
-        my_printf("Error: Failed to allocate memory\n");
-        exit(EXIT_FAILURE);
-    }
-
-    token = strtok(line, TOK_DELIM);
-    while (token != NULL)
-    {
-        tokens[position] = token;
-        position++;
-
-        if (position >= bufsize)
-        {
-            bufsize += TOK_BUFSIZE;
-            tokens = realloc(tokens, bufsize * sizeof(char*));
-            if (!tokens)
-            {
-                my_printf("Error: Failed to allocate memory\n");
-                exit(EXIT_FAILURE);
-            }
-        }
-
-        token = strtok(NULL, TOK_DELIM);
-    }
-    tokens[position] = NULL;
-    return tokens;
+	if (name[0] == '\0')
+		return (name);
+	while (*path)
+	{
+		str = append(*path, name);
+		if (access(name, F_OK) == 0 && access(name, X_OK) == 0)
+			return (name);
+		if (access(str, F_OK) == 0 && access(str, X_OK) == 0)
+			return (str);
+		path++;
+	}
+	return ("File doesn't exist or it hit null");
 }
