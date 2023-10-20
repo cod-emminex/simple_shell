@@ -1,47 +1,61 @@
-#include "emmy.h"
+#define _XOPEN_SOURCE_700
+#define _GNU_SOURCE
+#include "header.h"
 
 /**
-    * main - Entry point
-    * @ac: Number of arguments
-    * @av: Array of arguments
-    * @env: Array of environment variables
-    *
-    * Return: Always 0 (Success)
-    */
-int main(void)
+ * main - shell
+ * @ac: argument count
+ * @argv: arguments
+ * @env: environmental parameters
+ *
+ * Return: 0 on success
+ */
+
+int main(int __attribute__((unused))ac, char **argv, char **env)
 {
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    char **args;
+	char *path;
+	char **path_dirs;
+	char *buffer = NULL;
+	size_t bufsize = 0;
+	ssize_t characters = 0;
+	char **args;
+	char *filename;
 
-    while (1)
+	while (1)
 	{
-		display_prompt();
-        read = getline(&line, &len, stdin);
-        if (read == -1) {
-            exit(EXIT_SUCCESS);
-        }
+		path = _getenv("PATH", env);
+		path_dirs = print_dir(path);
+		buffer = NULL;
+		args = NULL;
+		bufsize = 0;
+		characters = 0;
+		write(STDIN_FILENO, "$ ", 2);
+		characters = getline(&buffer, &bufsize, stdin);
+		if (characters == EOF)
+		{
+			free(path);
+			free(buffer);
+			if (isatty(STDIN_FILENO) == 1)
+				write(STDERR_FILENO, "\n", 1);
+			exit(0);
+		}
 
-        /* Parse the command line into arguments */
-        args = parse_line(line);
-        if (args == NULL)
-        {
-            my_printf("Error: Invalid command\n");
-            continue;
-        }
+		buffer = built_in(buffer, env);
+		if (buffer == NULL)
+		{
+			free(path);
+			free(path_dirs);
+			free(buffer);
+		}
+		args = ret_array(buffer);
 
-        /* Execute the command */
-        execute_command(args[0]);
+		filename = is_exec(path_dirs, buffer);
+		fork_execute(filename, args, argv[0]);
 
-        /* Free the memory allocated for the arguments */
-        free(args);
-    }
-	free(line);
-    return (0);
+		free(path_dirs);
+		free(path);
+		free(args);
+		free(buffer);
+	}
+	return (0);
 }
-
-
-
-
-
