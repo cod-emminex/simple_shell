@@ -1,17 +1,6 @@
 #include "emmy.h"
 
 /**
- * emmy_exit - terminates the shell
- *
- * Return: nothing
- */
-
-void emmy_exit(void)
-{
-	exit(0);
-}
-
-/**
  * emmy_getline - reads a line from the standard input
  * @lineptr: pointer to a pointer to a char.
  * @n: pointer to a size_t.
@@ -63,91 +52,4 @@ ssize_t emmy_getline(char **lineptr, size_t *n, FILE *stream)
 	return (line_size);
 }
 
-/**
- * emmy_strtok - splits a string into tokens based on a delimiter
- * @str: the string to split. If str is NULL, the function continues splitting
- * the string from where it left off in the previous call.
- * @delim: the delimiter to split the string on.
- * Return: a pointer to the next token, or NULL if there are no more tokens.
- */
 
-char *emmy_strtok(char *str, const char *delim)
-{
-	static char *next_token;
-	char *token_end = next_token;
-
-	if (str != NULL)
-		next_token = str;
-	if (next_token == NULL)
-		return (NULL);
-
-	while (*next_token != '\0' && strchr(delim, *next_token) != NULL)
-		next_token++;
-	if (*next_token == '\0')
-		return (NULL);
-
-	while (*token_end != '\0' && strchr(delim, *token_end) == NULL)
-		token_end++;
-
-	if (*token_end != '\0')
-	{
-		*token_end = '\0', next_token = token_end + 1;
-	}
-	else
-	{
-		next_token = NULL;
-	}
-
-	return (next_token - 1);
-}
-
-/**
- * emmy_check_command - check if command exists
- * @env: shell environ
- * @command: command to check
- * Return:
- *   A pointer to an array of tokens.
- */
-
-char *emmy_check_command(char *command, char **env)
-{
-	char *command_path = NULL;
-	int found = 0;
-	int i = 0;
-
-	for (i = 0; env[i] != NULL; i++)
-	{
-		if (strncmp(env[i], "PATH=", 5) == 0)
-		{
-
-			char *path = env[i] + 5;
-			char *dir = strtok(path, ":");
-
-			while (dir != NULL)
-			{
-				char command_path[256];
-
-				emmyf(command_path, "%s/%s", dir, command);
-
-				if (access(command_path, X_OK) == 0)
-				{
-					found = 1;
-					break;
-				}
-				dir = strtok(NULL, ":");
-			}
-			break;
-		}
-
-	}
-	if (found)
-	{
-		/* Return the full path to the command */
-		return (command_path);
-	}
-	else
-	{
-		emmyf("%s: command not found\n", command);
-		return (NULL);
-	}
-}

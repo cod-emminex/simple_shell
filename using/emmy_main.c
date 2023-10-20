@@ -15,16 +15,16 @@ int main(int i, char **args, char **envp)
 
 	while (true)
 	{
-		emmyf("emmy$ \n");
+		emmyf("emmy$ ");
 		input = malloc(sizeof(char) * BUFFER_SIZE);
 		n = BUFFER_SIZE;
 		emmy_getline(&input, &n, stdin);
 		args = malloc(sizeof(char *) * MAX_ARGS);
 		token = emmy_strtok(input, " ");
-		while (token != NULL)
+		if (token != NULL)
 		{
 			args[i] = token;
-			token = emmy_strtok(NULL, " ");
+			emmy_exec(args);
 			i++;
 		}
 		args[i] = NULL;
